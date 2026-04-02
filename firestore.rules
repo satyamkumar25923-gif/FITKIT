@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: /users/{uid}
+    // Fields:
+    //   - uid: string (required) - Firebase Auth UID
+    //   - name: string (optional)
+    //   - email: string (optional)
+    //   - goal: string (required, enum: ["bulking", "cutting", "maintenance"])
+    //   - metabolism: string (required, enum: ["high", "slow", "balanced"])
+    //   - weight: number (optional)
+    //   - height: number (optional)
+    //   - age: number (optional)
+    //   - gender: string (optional, enum: ["male", "female", "other"])
+    //   - activityLevel: string (optional, enum: ["sedentary", "light", "moderate", "active", "very_active"])
+    //   - dailyCalorieTarget: number (optional)
+    //   - dailyProteinTarget: number (optional)
+    //   - dailyCarbTarget: number (optional)
+    //   - dailyFatTarget: number (optional)
+    //   - messRealityMode: boolean (optional)
+    //   - budget: number (optional)
+    //   - availableEquipment: list (optional)
+    //
+    // Collection: /users/{uid}/schedules/weekly
+    // Fields:
+    //   - uid: string (required)
+    //   - schedule: map (required) - Day of week mapping to meals
+    //
+    // Collection: /users/{uid}/workouts/{date}
+    // Fields:
+    //   - uid: string (required)
+    //   - date: string (required, format: date)
+    //   - type: string (optional)
+    //   - duration: number (optional)
+    //   - intensity: string (optional, enum: ["low", "medium", "high"])
+    //
+    // Collection: /users/{uid}/progress/{date}
+    // Fields:
+    //   - uid: string (required)
+    //   - date: string (required, format: date)
+    //   - weight: number (optional)
+    //   - strengthScore: number (optional)
+    //   - consistencyScore: number (optional)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidGoal(goal) {
+      return goal in ['bulking', 'cutting', 'maintenance'];
+    }
+
+    function isValidGender(gender) {
+      return gender in ['male', 'female', 'other'];
+    }
+
+    function isValidActivityLevel(level) {
+      return level in ['sedentary', 'light', 'moderate', 'active', 'very_active'];
+    }
+
+    function isValidIntensity(intensity) {
+      return intensity in ['low', 'medium', 'high'];
+    }
+
+    function isValidMetabolism(metabolism) {
+      return metabolism in ['high', 'slow', 'balanced'];
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'goal', 'metabolism']) &&
+             data.uid == request.auth.uid &&
+             isValidGoal(data.goal) &&
+             isValidMetabolism(data.metabolism) &&
+             (!('gender' in data) || isValidGender(data.gender)) &&
+             (!('activityLevel' in data) || isValidActivityLevel(data.activityLevel)) &&
+             (!('weight' in data) || data.weight is number) &&
+             (!('height' in data) || data.height is number) &&
+             (!('age' in data) || data.age is number) &&
+             (!('dailyCalorieTarget' in data) || data.dailyCalorieTarget is number) &&
+             (!('dailyProteinTarget' in data) || data.dailyProteinTarget is number) &&
+             (!('dailyCarbTarget' in data) || data.dailyCarbTarget is number) &&
+             (!('dailyFatTarget' in data) || data.dailyFatTarget is number) &&
+             (!('messRealityMode' in data) || data.messRealityMode is bool) &&
+             (!('budget' in data) || data.budget is number) &&
+             (!('availableEquipment' in data) || data.availableEquipment is list);
+    }
+
+    function isValidSchedule(data) {
+      return data.keys().hasAll(['uid', 'schedule']) &&
+             data.uid == request.auth.uid &&
+             data.schedule is map;
+    }
+
+    function isValidWorkout(data) {
+      return data.keys().hasAll(['uid', 'date']) &&
+             data.uid == request.auth.uid &&
+             data.date is string &&
+             (!('intensity' in data) || isValidIntensity(data.intensity)) &&
+             (!('duration' in data) || data.duration is number);
+    }
+
+    function isValidProgress(data) {
+      return data.keys().hasAll(['uid', 'date']) &&
+             data.uid == request.auth.uid &&
+             data.date is string &&
+             (!('weight' in data) || data.weight is number) &&
+             (!('strengthScore' in data) || data.strengthScore is number) &&
+             (!('consistencyScore' in data) || data.consistencyScore is number);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+
+      match /schedules/weekly {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidSchedule(request.resource.data);
+        allow update: if isOwner(userId) && isValidSchedule(request.resource.data);
+      }
+
+      match /workouts/{date} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidWorkout(request.resource.data);
+        allow update: if isOwner(userId) && isValidWorkout(request.resource.data);
+      }
+
+      match /progress/{date} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidProgress(request.resource.data);
+        allow update: if isOwner(userId) && isValidProgress(request.resource.data);
+      }
+    }
+  }
+}

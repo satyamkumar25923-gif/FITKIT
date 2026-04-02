@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and fitness goals.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "goal": { "type": "string", "enum": ["bulking", "cutting", "maintenance"] },
+        "metabolism": { "type": "string", "enum": ["high", "slow", "balanced"] },
+        "weight": { "type": "number" },
+        "height": { "type": "number" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "activityLevel": { "type": "string", "enum": ["sedentary", "light", "moderate", "active", "very_active"] },
+        "dailyCalorieTarget": { "type": "number" },
+        "dailyProteinTarget": { "type": "number" },
+        "dailyCarbTarget": { "type": "number" },
+        "dailyFatTarget": { "type": "number" },
+        "messRealityMode": { "type": "boolean", "description": "Adjust for oily/inconsistent portions" },
+        "budget": { "type": "number", "description": "Daily add-on budget (₹50, ₹100, etc.)" },
+        "availableEquipment": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["bodyweight", "dumbbells", "resistance_bands", "full_gym", "pull_up_bar"] }
+        }
+      },
+      "required": ["uid", "goal", "metabolism"]
+    },
+    "MessSchedule": {
+      "title": "MessSchedule",
+      "description": "Weekly mess meal schedule.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "schedule": {
+          "type": "object",
+          "description": "Day of week mapping to meals",
+          "properties": {
+            "monday": { "$ref": "DailyMeals" },
+            "tuesday": { "$ref": "DailyMeals" },
+            "wednesday": { "$ref": "DailyMeals" },
+            "thursday": { "$ref": "DailyMeals" },
+            "friday": { "$ref": "DailyMeals" },
+            "saturday": { "$ref": "DailyMeals" },
+            "sunday": { "$ref": "DailyMeals" }
+          }
+        }
+      }
+    },
+    "DailyMeals": {
+      "title": "DailyMeals",
+      "description": "Meals for a specific day.",
+      "type": "object",
+      "properties": {
+        "breakfast": { "type": "string" },
+        "lunch": { "type": "string" },
+        "dinner": { "type": "string" }
+      }
+    },
+    "Workout": {
+      "title": "Workout",
+      "description": "User's workout for a specific day.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "type": { "type": "string" },
+        "duration": { "type": "number" },
+        "intensity": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    },
+    "Progress": {
+      "title": "Progress",
+      "description": "Weekly progress tracking.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "weight": { "type": "number" },
+        "strengthScore": { "type": "number" },
+        "consistencyScore": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/users/{uid}/schedules/weekly": {
+      "schema": "MessSchedule",
+      "description": "User's weekly mess schedule"
+    },
+    "/users/{uid}/workouts/{date}": {
+      "schema": "Workout",
+      "description": "User's daily workout logs"
+    },
+    "/users/{uid}/progress/{date}": {
+      "schema": "Progress",
+      "description": "User's progress tracking logs"
+    }
+  }
+}
