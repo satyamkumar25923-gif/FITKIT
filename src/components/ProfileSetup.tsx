@@ -3,8 +3,9 @@ import { User } from "firebase/auth";
 import { db, handleFirestoreError, OperationType } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { UserProfile, Goal, ActivityLevel } from "../types";
-import { Target, Weight, Ruler, User as UserIcon, ChevronRight, Loader2, IndianRupee, Zap } from "lucide-react";
+import { Target, Weight, Ruler, User as UserIcon, ChevronRight, IndianRupee, Zap } from "lucide-react";
 import { motion } from "motion/react";
+import { LoadingCircle } from "./LoadingCircle";
 
 interface ProfileSetupProps {
   user: User;
@@ -260,7 +261,7 @@ export function ProfileSetup({ user, existingProfile, onComplete }: ProfileSetup
                 disabled={loading}
                 className="flex-1 py-4 bg-orange-500 text-white font-black rounded-2xl flex items-center justify-center gap-2 uppercase italic tracking-tighter disabled:opacity-50"
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Finish"}
+                {loading ? <LoadingCircle size="sm" /> : "Finish"}
               </button>
             </div>
           </motion.div>

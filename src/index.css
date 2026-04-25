@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -9,12 +9,21 @@
 :root {
   background-color: #09090b;
   color: #ffffff;
+  --surface: rgba(24, 24, 27, 0.78);
+  --surface-strong: rgba(39, 39, 42, 0.88);
+  --glow: rgba(249, 115, 22, 0.32);
 }
 
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(249, 115, 22, 0.16), transparent 38%),
+    radial-gradient(circle at 85% 20%, rgba(14, 165, 233, 0.1), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.1), transparent 34%),
+    #09090b;
 }
 
 h1, h2, h3, h4, h5, h6, .font-display {
@@ -46,4 +55,221 @@ h1, h2, h3, h4, h5, h6, .font-display {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.glass-panel {
+  background: linear-gradient(140deg, rgba(39, 39, 42, 0.75), rgba(24, 24, 27, 0.6));
+  border: 1px solid rgba(63, 63, 70, 0.65);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+}
+
+.premium-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
+}
+
+.premium-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(249, 115, 22, 0.25), rgba(14, 165, 233, 0.08), transparent 48%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.premium-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+}
+
+.premium-card:hover::after {
+  opacity: 1;
+}
+
+.animated-gradient-text {
+  background: linear-gradient(110deg, #fb923c 10%, #fdba74 40%, #f97316 62%, #38bdf8 100%);
+  background-size: 210% auto;
+  display: inline-block;
+  line-height: 1.05;
+  padding-top: 0.06em;
+  padding-right: 0.08em;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+
+.brand-wordmark {
+  text-shadow: 0 0 16px rgba(249, 115, 22, 0.28), 0 2px 10px rgba(0, 0, 0, 0.45);
+  -webkit-text-stroke: 0.45px rgba(255, 255, 255, 0.42);
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(34px);
+  animation: drift 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.loading-circle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 14px rgba(249, 115, 22, 0.22));
+}
+
+.loader-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.loader-md {
+  width: 2rem;
+  height: 2rem;
+}
+
+.loader-lg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.loading-circle-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background:
+    conic-gradient(from 90deg, #fb923c 0deg, #f97316 130deg, #38bdf8 240deg, #fb923c 360deg)
+    border-box;
+  -webkit-mask:
+    radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+  animation: spin-ring 1.15s linear infinite;
+}
+
+.loading-circle-aura {
+  position: absolute;
+  inset: -26%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.26), rgba(56, 189, 248, 0.12), transparent 70%);
+  animation: aura-breathe 1.9s ease-in-out infinite;
+}
+
+.loading-circle-orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  animation: spin-orbit 2.1s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+.loading-circle-dot {
+  position: absolute;
+  width: 14%;
+  height: 14%;
+  border-radius: 999px;
+  top: 7%;
+  left: 43%;
+}
+
+.loading-circle-dot-primary {
+  background: linear-gradient(140deg, #fdba74, #fb923c);
+  box-shadow: 0 0 10px rgba(251, 146, 60, 0.72);
+}
+
+.loading-circle-dot-secondary {
+  top: auto;
+  bottom: 9%;
+  left: 45%;
+  width: 10%;
+  height: 10%;
+  background: linear-gradient(140deg, #7dd3fc, #38bdf8);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.65);
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+.loading-circle-core {
+  width: 34%;
+  height: 34%;
+  border-radius: 999px;
+  background: radial-gradient(circle, #ffffff 0%, #fdba74 35%, #fb923c 72%, #f97316 100%);
+  animation: pulse-core 1.25s ease-in-out infinite;
+  box-shadow: 0 0 14px rgba(251, 146, 60, 0.7), 0 0 22px rgba(56, 189, 248, 0.2);
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0) scale(1.08);
+  }
+}
+
+@keyframes spin-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-orbit {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes pulse-core {
+  0%,
+  100% {
+    transform: scale(0.82);
+    opacity: 0.82;
+  }
+  50% {
+    transform: scale(1.13);
+    opacity: 1;
+  }
+}
+
+@keyframes aura-breathe {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.62;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.9;
+  }
+}
+
+@keyframes dot-pulse {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
 }

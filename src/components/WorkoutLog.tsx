@@ -3,8 +3,9 @@ import { User } from "firebase/auth";
 import { db, handleFirestoreError, OperationType } from "../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Workout, Intensity } from "../types";
-import { Dumbbell, Clock, Zap, Save, Loader2, CheckCircle } from "lucide-react";
+import { Dumbbell, Clock, Zap, Save, CheckCircle } from "lucide-react";
 import { motion } from "motion/react";
+import { LoadingCircle } from "./LoadingCircle";
 
 interface WorkoutLogProps {
   user: User;
@@ -124,7 +125,7 @@ export function WorkoutLog({ user }: WorkoutLogProps) {
             saved ? "bg-green-500 text-white" : "bg-white text-black hover:bg-orange-500 hover:text-white"
           } disabled:opacity-50`}
         >
-          {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : saved ? (
+          {loading ? <LoadingCircle size="md" /> : saved ? (
             <>
               <CheckCircle className="w-6 h-6" /> Logged!
             </>

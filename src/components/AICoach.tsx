@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { UserProfile } from "../types";
-import { Send, User, Bot, Loader2, Sparkles } from "lucide-react";
+import { Send, User, Bot, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { LoadingCircle } from "./LoadingCircle";
 
 interface Message {
   role: "user" | "assistant";
@@ -80,7 +81,7 @@ export function AICoach({ profile }: AICoachProps) {
               <Bot className="w-4 h-4 text-orange-500" />
             </div>
             <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-3xl rounded-tl-none">
-              <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
+              <LoadingCircle size="sm" />
             </div>
           </div>
         )}

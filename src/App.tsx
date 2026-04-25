@@ -17,18 +17,34 @@ import { WorkoutLog } from "./components/WorkoutLog";
 import { Layout } from "./components/Layout";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { WorkoutRecommendations } from "./components/WorkoutRecommendations";
-import { Loader2 } from "lucide-react";
+import { LoadingCircle } from "./components/LoadingCircle";
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [schedule, setSchedule] = useState<MessSchedule | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [scheduleLoading, setScheduleLoading] = useState(true);
+  const [user, setUser] = useState<User | null>({ uid: 'test-user-id', email: 'test@student.com' } as unknown as User);
+  const [profile, setProfile] = useState<UserProfile | null>({
+    uid: "test-user-id", name: "Hostel Student", goal: "bulking", metabolism: "balanced",
+    weight: 70, height: 175, age: 20, activityLevel: "active",
+    messRealityMode: true, budget: 100, availableEquipment: ["bodyweight", "dumbbells"]
+  });
+  const [schedule, setSchedule] = useState<MessSchedule | null>({
+    uid: "test-user-id",
+    schedule: {
+      monday: { breakfast: "Poha", lunch: "Dal Rice", dinner: "Roti Sabzi" },
+      tuesday: { breakfast: "Idli", lunch: "Rajma", dinner: "Paneer" },
+      wednesday: { breakfast: "Upma", lunch: "Kadhi", dinner: "Chicken" },
+      thursday: { breakfast: "Dosa", lunch: "Chole", dinner: "Mix Veg" },
+      friday: { breakfast: "Paratha", lunch: "Biryani", dinner: "Egg Curry" },
+      saturday: { breakfast: "Puri", lunch: "Khichdi", dinner: "Dal Makhani" },
+      sunday: { breakfast: "Aloo Paratha", lunch: "Special Thali", dinner: "Noodles" },
+    }
+  });
+  const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
 
   useEffect(() => {
+    /*
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {
@@ -74,6 +90,7 @@ export default function App() {
     });
 
     return () => unsubscribe();
+    */
   }, []);
 
   const handleLogin = async () => {
@@ -90,7 +107,7 @@ export default function App() {
   if (loading || (user && (profileLoading || scheduleLoading))) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 text-white space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+        <LoadingCircle size="lg" />
         <p className="text-zinc-500 text-xs uppercase tracking-widest animate-pulse">Syncing your fitness data...</p>
       </div>
     );
@@ -99,13 +116,15 @@ export default function App() {
   return (
     <ErrorBoundary>
       {!user ? (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 text-white p-6">
-          <div className="max-w-md w-full space-y-8 text-center">
-            <h1 className="text-6xl font-black tracking-tighter text-orange-500 italic">FITKIT</h1>
-            <p className="text-zinc-400 text-lg">AI-powered diet & fitness for hostel students.</p>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 text-white p-6 relative overflow-hidden">
+          <div className="ambient-orb w-60 h-60 bg-orange-500/20 -top-12 -left-20" />
+          <div className="ambient-orb w-56 h-56 bg-cyan-500/15 -bottom-10 -right-14" style={{ animationDelay: "1.4s" }} />
+          <div className="max-w-md w-full space-y-8 text-center glass-panel rounded-[2rem] p-8 md:p-10 premium-card">
+            <h1 className="text-6xl font-black tracking-tight italic animated-gradient-text brand-wordmark">FITKIT</h1>
+            <p className="text-zinc-300 text-lg">AI-powered diet and fitness for hostel students.</p>
             <button
               onClick={handleLogin}
-              className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-105"
+              className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-[1.03] shadow-xl shadow-black/20"
             >
               Sign in with Google
             </button>

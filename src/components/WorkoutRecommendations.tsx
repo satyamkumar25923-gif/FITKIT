@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { UserProfile, WorkoutRecommendation, Workout } from "../types";
 import { db, handleFirestoreError, OperationType } from "../firebase";
 import { collection, query, limit, getDocs, orderBy } from "firebase/firestore";
-import { Dumbbell, Clock, Zap, ChevronRight, Loader2, AlertCircle, Info } from "lucide-react";
+import { Dumbbell, Clock, Zap, ChevronRight, AlertCircle, Info } from "lucide-react";
 import { motion } from "motion/react";
+import { LoadingCircle } from "./LoadingCircle";
 
 interface WorkoutRecommendationsProps {
   profile: UserProfile;
@@ -46,7 +47,7 @@ export function WorkoutRecommendations({ profile }: WorkoutRecommendationsProps)
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+        <LoadingCircle size="lg" />
         <p className="text-zinc-500 animate-pulse uppercase italic font-black tracking-tighter">Designing your session...</p>
       </div>
     );

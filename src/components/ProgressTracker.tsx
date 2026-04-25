@@ -3,8 +3,9 @@ import { User } from "firebase/auth";
 import { db, handleFirestoreError, OperationType } from "../firebase";
 import { doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { Progress } from "../types";
-import { TrendingUp, Weight, Zap, Save, Loader2, CheckCircle, Trophy } from "lucide-react";
+import { TrendingUp, Weight, Zap, Save, CheckCircle, Trophy } from "lucide-react";
 import { motion } from "motion/react";
+import { LoadingCircle } from "./LoadingCircle";
 
 interface ProgressTrackerProps {
   user: User;
@@ -101,7 +102,7 @@ export function ProgressTracker({ user }: ProgressTrackerProps) {
           saved ? "bg-green-500 text-white" : "bg-white text-black hover:bg-orange-500 hover:text-white"
         } disabled:opacity-50`}
       >
-        {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : saved ? (
+        {loading ? <LoadingCircle size="md" /> : saved ? (
           <>
             <CheckCircle className="w-6 h-6" /> Updated!
           </>

@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { UserProfile, MessSchedule, Recommendation, Workout } from "../types";
 import { db, handleFirestoreError, OperationType } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Flame, Zap, Target, Coffee, Utensils, Moon, AlertCircle, Loader2 } from "lucide-react";
+import { Flame, Zap, Target, Coffee, Utensils, Moon, AlertCircle } from "lucide-react";
 import { motion } from "motion/react";
+import { LoadingCircle } from "./LoadingCircle";
 
 interface DashboardProps {
   profile: UserProfile;
@@ -47,7 +48,7 @@ export function Dashboard({ profile, schedule }: DashboardProps) {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+        <LoadingCircle size="lg" />
         <p className="text-zinc-500 animate-pulse">Calculating your optimal diet...</p>
       </div>
     );
@@ -80,8 +81,11 @@ export function Dashboard({ profile, schedule }: DashboardProps) {
       {/* Hero Stats */}
       <div className="grid grid-cols-2 gap-4">
         <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
           whileHover={{ scale: 1.02 }}
-          className="p-4 bg-zinc-900 rounded-3xl border border-zinc-800 flex flex-col justify-between"
+          className="p-4 bg-zinc-900 rounded-3xl border border-zinc-800 flex flex-col justify-between premium-card"
         >
           <div className="flex justify-between items-start">
             <Flame className="w-5 h-5 text-orange-500" />
@@ -94,8 +98,11 @@ export function Dashboard({ profile, schedule }: DashboardProps) {
         </motion.div>
 
         <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.07 }}
           whileHover={{ scale: 1.02 }}
-          className="p-4 bg-zinc-900 rounded-3xl border border-zinc-800 flex flex-col justify-between"
+          className="p-4 bg-zinc-900 rounded-3xl border border-zinc-800 flex flex-col justify-between premium-card"
         >
           <div className="flex justify-between items-start">
             <Zap className="w-5 h-5 text-blue-500" />
@@ -110,12 +117,17 @@ export function Dashboard({ profile, schedule }: DashboardProps) {
 
       {/* Gap Alert */}
       {gap.protein > 0 && (
-        <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center gap-3">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.15 }}
+          className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center gap-3"
+        >
           <AlertCircle className="w-5 h-5 text-orange-500 shrink-0" />
           <p className="text-xs text-orange-200 font-medium">
             You're missing <span className="font-bold">{gap.protein}g</span> of protein today. Check supplement suggestions!
           </p>
-        </div>
+        </motion.div>
       )}
 
       {/* Daily Plan */}
@@ -128,20 +140,29 @@ export function Dashboard({ profile, schedule }: DashboardProps) {
       </div>
 
       {/* Lazy Tip */}
-      <div className="p-6 bg-zinc-900 rounded-3xl border border-zinc-800 relative overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.2 }}
+        className="p-6 bg-zinc-900 rounded-3xl border border-zinc-800 relative overflow-hidden premium-card"
+      >
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <Zap className="w-20 h-20 text-orange-500" />
         </div>
         <h3 className="text-sm font-bold uppercase tracking-widest text-orange-500 mb-2">Lazy Mode Tip</h3>
         <p className="text-lg font-medium italic leading-tight text-zinc-200">"{lazyTip}"</p>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
 function MealCard({ icon: Icon, title, data, color }: { icon: any; title: string; data: any; color: string }) {
   return (
-    <div className="p-5 bg-zinc-900 rounded-3xl border border-zinc-800 space-y-3">
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+      className="p-5 bg-zinc-900 rounded-3xl border border-zinc-800 space-y-3 premium-card"
+    >
       <div className="flex items-center gap-2">
         <Icon className={`w-5 h-5 ${color}`} />
         <h3 className="font-bold uppercase tracking-wider text-sm">{title}</h3>
@@ -159,6 +180,6 @@ function MealCard({ icon: Icon, title, data, color }: { icon: any; title: string
         )}
         <p className="text-xs text-zinc-500 italic mt-2 border-t border-zinc-800 pt-2">{data.advice}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
