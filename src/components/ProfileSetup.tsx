@@ -82,10 +82,19 @@ export function ProfileSetup({ user, existingProfile, onComplete }: ProfileSetup
         dailyProteinTarget: Math.round(proteinTarget),
       };
 
-      await setDoc(doc(db, "users", user.uid), updatedProfile);
+      // In local/demo mode we use a mock user id and skip Firestore writes.
+      if (user.uid !== "test-user-id") {
+        await setDoc(doc(db, "users", user.uid), updatedProfile);
+      }
+      window.alert(existingProfile ? "Profile updated successfully!" : "Profile setup completed!");
       onComplete();
     } catch (error) {
-      handleFirestoreError(error, OperationType.WRITE, `users/${user.uid}`);
+      try {
+        handleFirestoreError(error, OperationType.WRITE, `users/${user.uid}`);
+      } catch (handledError) {
+        console.error("Profile save failed:", handledError);
+      }
+      window.alert("Could not update profile. Please try again.");
     } finally {
       setLoading(false);
     }
